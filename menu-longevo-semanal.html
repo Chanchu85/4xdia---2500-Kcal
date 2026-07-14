@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menú Semanal — Longevo</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --orange: #FF9D1D;
+  --orange-dark: #CC7A00;
+  --orange-light: #FFF8EE;
+  --black: #1A1A1A;
+  --gray: #F4F4F4;
+  --gray-mid: #E8E8E8;
+  --white: #FFFFFF;
+  --text: #1A1A1A;
+  --text-muted: #777;
+  --border: #E5E5E5;
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; }
+
+.site-header { background: var(--black); padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; }
+.logo-text { font-size: 22px; font-weight: 800; color: var(--orange); letter-spacing: -0.5px; }
+.logo-text span { color: var(--white); }
+.header-tag { font-size: 11px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+
+.hero { background: var(--black); padding: 28px 28px 36px; text-align: center; }
+.hero-title { font-size: 30px; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+.hero-title span { color: var(--orange); }
+.hero-sub { font-size: 13px; color: #888; margin-bottom: 20px; }
+.hero-pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.pill { background: rgba(255,157,29,0.12); color: var(--orange); border: 1px solid rgba(255,157,29,0.25); padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+.pill strong { color: var(--white); }
+
+.notes { max-width: 1020px; margin: 20px auto 0; padding: 0 16px; }
+.notes-inner { background: var(--white); border-left: 4px solid var(--orange); border-radius: 8px; padding: 14px 18px; font-size: 12.5px; color: var(--text-muted); line-height: 1.55; }
+.notes-inner strong { color: var(--text); }
+
+.main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 60px; }
+
+.week-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+.week-tabs::-webkit-scrollbar { display: none; }
+.week-tab { padding: 8px 20px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1.5px solid var(--border); cursor: pointer; background: var(--white); color: var(--text-muted); font-family: 'Poppins', sans-serif; white-space: nowrap; transition: all 0.15s; }
+.week-tab.active { background: var(--black); color: var(--orange); border-color: var(--black); }
+.week-tab:hover:not(.active) { border-color: var(--orange); color: var(--orange-dark); }
+
+.week-panel { display: none; }
+.week-panel.active { display: block; }
+
+.table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+table { width: 100%; border-collapse: collapse; background: var(--white); min-width: 900px; }
+thead tr { background: var(--black); }
+th { padding: 14px 18px; font-size: 12px; font-weight: 700; color: var(--white); text-align: left; letter-spacing: 0.3px; }
+th.col-meal { color: var(--orange); }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: #FAFAFA; }
+td { padding: 14px 18px; vertical-align: top; }
+td:first-child { width: 56px; text-align: center; }
+
+.op-num { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: var(--orange); color: var(--black); border-radius: 50%; font-size: 13px; font-weight: 800; }
+
+/* BULLETS */
+td ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+td ul li { font-size: 12.5px; color: var(--text); line-height: 1.55; padding-left: 14px; position: relative; }
+td ul li::before { content: '•'; position: absolute; left: 0; color: var(--orange); font-weight: 800; font-size: 14px; line-height: 1.3; }
+td ul li:last-child:not(:first-child) { color: var(--text-muted); font-size: 12px; }
+
+.site-footer { background: var(--black); padding: 24px; text-align: center; margin-top: 40px; }
+.footer-logo { font-size: 18px; font-weight: 800; color: var(--orange); margin-bottom: 4px; }
+.footer-logo span { color: var(--white); }
+.footer-sub { font-size: 11px; color: #555; }
+
+@media (max-width: 600px) {
+  .hero-title { font-size: 22px; }
+  .site-header { padding: 14px 16px; }
+  th, td { padding: 10px 12px; }
+  td ul li { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo-text">LONG<span>EVO</span></div>
+  <div class="header-tag">Plan Nutricional</div>
+</header>
+
+<div class="hero">
+  <div class="hero-title">Menú <span>Semanal</span></div>
+  <div class="hero-sub">Plan personalizado · 2500 kcal · Mantenimiento · Omnívora</div>
+  <div class="hero-pills">
+    <div class="pill"><strong>2500</strong> kcal</div>
+    <div class="pill"><strong>4</strong> comidas por día</div>
+    <div class="pill"><strong>7</strong> opciones por semana</div>
+    <div class="pill"><strong>12</strong> semanas</div>
+  </div>
+</div>
+
+<div class="notes">
+  <div class="notes-inner"><strong>Recordá:</strong> tomá abundante agua durante el día, evitá gaseosas y jugos azucarados, priorizá cocciones saludables (al horno, a la plancha o al vapor) por sobre las frituras, y mantené horarios regulares de comida para evitar el picoteo.</div>
+</div>
+
+<div class="main">
+  <div class="week-tabs">
+    <button class="week-tab active" onclick="showWeek('s1',this)">Semanas 1 y 2</button>
+<button class="week-tab " onclick="showWeek('s2',this)">Semanas 3 y 4</button>
+<button class="week-tab " onclick="showWeek('s3',this)">Semanas 5 y 6</button>
+<button class="week-tab " onclick="showWeek('s4',this)">Semanas 7 y 8</button>
+<button class="week-tab " onclick="showWeek('s5',this)">Semanas 9 y 10</button>
+<button class="week-tab " onclick="showWeek('s6',this)">Semana 11 y 12</button>
+
+  </div>
+  
+  <div class="week-panel active" id="panel-s1">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de pan tostado con 100 gr de huevo revuelto + 50 gr de champiñones y 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pechuga a la plancha con 100 gr de banana hervida y 300 gr de ensalada de diferentes colores + 60 gr de porotos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de mix de frutos secos + 200 gr de frutos rojos</li></ul></td>
+          <td><ul><li>150 gr de pollo al wok con 250 gr de vegetales salteados a elección + 100 gr de quinoa y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto y 50 gr de tomate con 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de carne de cerdo con 100 gr de banana madura cocido y 300 gr de ensalada multicolor con 60 gr de lentejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 200 gr de frutas de estación + 40 gr de almendras</li></ul></td>
+          <td><ul><li>150 gr de pechuga al curry con 250 gr de ensalada de verdes y 100 gr de choclo + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto + 20 gr de semillas con 50 gr de espinaca. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pollo guisado con 200 gr cebolla, tomate y morrón + 100 gr de papa criolla con 60 gr de porotos y 100 gr de hojas verdes. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>2 huevos revueltos + 200 gr de ensalada de frutas con 40 gr de pistachos picados</li></ul></td>
+          <td><ul><li>Ensalada tipo caesar con 150 gr de pollo en trocitos, 250 gr de hojas verdes (espinaca, rúcula y lechuga) + 1 rodaja de pan integral tipo croutons con 40 gr palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo tibio, 50 gr de tomate + 20 gr de semillas de lino y 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pechuga tikka (marinadas en especias como canela, cúrcuma, paprika y jengibre) con 100 gr de arroz, 60 gr de lentejas + 300 gr de ensalada multicolor. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de maní tostado</li></ul></td>
+          <td><ul><li>Crema con 250 gr de vegetales, 150 gr de pollo + 100 gr de papa. Agregar 10 ml de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 2 claras + 50 gr espinaca + 60 gr de avena) 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de carne de cerdo especiada con comino y laurel con 100 gr de banana hervida + ensalada con 60 gr garbanzos, 250 gr de verdes con tomates cherry y cebolla morada. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de manteca de maní y 200 gr de banana</li></ul></td>
+          <td><ul><li>Ensalada con 150 gr atún, 250 gr de hojas verdes, tomate y cebolla morada + 100 gr de choclo y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>50 gr de pan blanco con 100 gr de huevos revueltos, 50 gr de cebolla y tomate con 20 gr de semillas de chía + 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de carne de res asada con 100 gr de puré de papa, 300 gr de ensalada de hojas verdes, pepino y tomate + 60 gr de hummus de garbanzos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur + 40 gr de castañas de cajú y 200 gr de fruta</li></ul></td>
+          <td><ul><li>3/4 de taza de hummus (garbanzos cocidos) + 100 gr de pan integral con 250 gr de ensalada de verdes, tomates cherry y pimiento + 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan con 100 gr de huevo revuelto + 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pollo al wok con 300 gr de vegetales salteados (a elección) 100 gr de banana hervida y 60 gr de porotos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de fruta) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>150 gr de pollo al horno con 100 gr de boniato asado y 250 gr de ensalada de repollo colorado, tomate y lechuga + 40 gr de palta</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="week-panel " id="panel-s2">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 50 gr de espinaca y 20 gr semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de carne de res a la plancha con 300 gr de ensalada tomate y remolacha, 60 gr de arvejas y 100 gr choclo. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 200 gr de frutas de estación + 40 gr de almendras</li></ul></td>
+          <td><ul><li>Wok de vegetales (150 gr de pollo mechado con 250 gr de pimientos asados) con 100 gr de arroz cocido y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 50 gr de champiñones y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pescado a las finas hierbas con 100 gr de quinoa o arroz con 300 gr de ensalada verde + 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>2 huevos revueltos con 40 gr de nueces picadas y 200 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de bife de carne de res con 100 gr de puré de papas + 250 gr de ensalada de hojas verdes, champiñones y tomate + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 50 gr de espinaca + 20 gr semillas de lino y 300 gr de fruta</li></ul></td>
+          <td><ul><li>Ensalada con 60 gr de lentejas y 150 gr de pollo + 300 gr de vegetales a elección y 100 gr de banana madura. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de almendras tostadas</li></ul></td>
+          <td><ul><li>Crema de zapallo (150 gr de pollo mechado + 100 gr de papa y 250 gr de zapallo cocida) 10 ml de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo tibio, 20 gr de semillas de girasol y 50 gr de tomate. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pescado al horno, 100 gr de puré de papa criolla con cilantro + 300 gr de ensalada (3 colores distintos) Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>4 claras revueltas + 40 gr de almendras y 200 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>150 gr de bistec de res con romero + 100 gr de boniato asado + 250 gr de brócoli, chauchas y espárragos al vapor con 5 ml de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 2 claras + 50 gr de espinaca + 60 gr de avena con 20 gr de semillas de girasol. 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de pechuga de pollo, 100 gr de banana hervida + 300 gr de ensalada de verdes con 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de castañas de cajú. Licuado de frutilla (200 gr de frutilla con agua y hielo)</li></ul></td>
+          <td><ul><li>150 gr de costilla de cerdo con orégano con 100 gr de choclo y 250 gr de puré de zapallo y zanahoria + 40 gr de palta pisado</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>50 gr de pan blanco con 100 gr de huevos revueltos, 50 gr de cebolla y tomate más 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de carne dorada con 300 gr de ensalada de hojas verdes, pepino y tomate + 100 gr banana hervida y 60 gr de porotos. 10 ml de aceite</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>150 gr de pechuga con cúrcuma, 250 gr de tomate, cebolla morada y 100 gr de choclo. 5 ml de aceite de oliva</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan con 100 gr de huevo revuelto y 50 gr de espinaca + 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de salmón con 100 gr de papa al horno y 300 gr de ensalada de hojas verdes, tomate y zapallo asada con 60 gr de arvejas + 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de mix de frutos secos y 200 gr de frutos rojos</li></ul></td>
+          <td><ul><li>150 gr de bistec de res a la plancha + 100 gr de arroz con 250 gr de ensalada de repollo blanco, colorado y zanahoria + 40 gr de palta pisado con limón</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="week-panel " id="panel-s3">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de tortilla integral con 2 huevos tibios con champiñones + 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pescado asado con 100 gr de papa asada o al vapor + 300 gr de ensalada de rúcula, espinaca, tomate, champiñones y 60 gr de poroto negro o blanco. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>Ensalada tipo caesar con 150 gr de pollo en trocitos y 250 gr de hojas verdes (espinaca, rúcula y lechuga)+ 100 gr de choclo con 40 gr palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 100 gr de claras + 50 gr de espinaca y 60 gr de avena) 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>Ensalada con 60 gr de lentejas y 150 gr de atún + 300 gr de lechuga, pepino, tomate, zanahoria asada y 100 gr de choclo. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de castañas de cajú. Licuado de frutilla y arándanos (200 gr de fruta con agua y hielo y 20 gr de semillas molidas)</li></ul></td>
+          <td><ul><li>Ensalada de 150 gr de atún con 250 gr de hojas verdes, tomate y cebolla morada + 100 gr de arroz y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto + 20 gr de semillas de sésamo y 50 gr de pimientos. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pechuga desmechada con 300 gr de vegetales asados y 100 gr de quinoa con 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Tortilla de 4 claras revueltas con 40 gr de almendras y 200 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>Omelette con 100 gr de huevo más 50 gr de queso (2 lonjas) con 250 gr de ensalada de verdes + 100 gr de granos de choclo y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 1 huevo revuelto con 50 gr de jamón de pavo, 50 gr de tomate en rodajas y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de salmón con 100 gr de batata asado, 300 gr de brócoli y zapallo asada + 60 gr de lentejas. 10 ml de aceite</li></ul></td>
+          <td><ul><li>150 gr de banana con 20 gr de manteca de maní. 150 gr de yogur natural con 50 gr de arándanos</li></ul></td>
+          <td><ul><li>Crema de brócoli y atún (150 gr de atún con 100 gr de papa + 250 gr de brócoli y cebolla) + 40 gr de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>50 gr de pan de masa madre con 1 huevo revuelto, 30 gr de queso y 50 gr de espinaca + 20 gr de semillas de lino. 300 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>150 gr de filete de pechuga con 100 gr de arroz + 300 gr de vegetales horneados con 10 ml de aceite y 60 gr de hummus de garbanzos</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de almendras tostadas. 200 gr de manzana verde</li></ul></td>
+          <td><ul><li>150g de salmón con 100 gr de papa asada + 250 gr de ensalada de tomate, rúcula, pepino y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>Pancake salado (2 claras + 50 gr de espinaca y 60 gr de avena) con 30 gr de queso blando + 20 gr de semillas de girasol. 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de filete de cerdo magro con 100 gr de banana asada y 300 gr de ensalada a elección con 10 ml de aceite y 60 gr de hummus</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de mix de almendras y castañas de cajú</li></ul></td>
+          <td><ul><li>150 gr de pechuga de pollo + 100 gr de boniato asado + 250 gr de ensalada de espinaca y zanahoria rallada con 40 gr de aceitunas</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan de masa madre con 100 gr de huevo y 50 gr de espinaca + 20 gr de semillas de lino. 300 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>150 gr de filete de res magro con 100 gr de papa al vapor, 300 gr de ensalada de lechuga, tomates cherry, rúcula y 60 gr de arvejas</li></ul></td>
+          <td><ul><li>150 gr de manzana con 20 gr de manteca de maní y 1 vaso de 200 ml de leche descremada</li></ul></td>
+          <td><ul><li>3/4 de taza de hummus (garbanzos cocidos) + 100 gr de pan integral con 250 gr de ensalada de verdes, tomates cherry y pimiento. 40 gr de palta pisado con limón</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="week-panel " id="panel-s4">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de pan tostado con 100 gr de huevo revuelto, 50 gr de champiñones y 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de carne de res con 100 gr de arroz + 60 gr de arvejas y 300 gr de verduras en tiritas salteadas: cebolla, pimientos y zanahorias. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Smoothie de frutilla y arándanos (200 ml de leche descremada + 200 gr de fruta) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>Omelette con 3 huevos + 2 lonjas de jamón con 100 gr de choclo, 250 gr de hojas verdes y tomates cherry + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto + 50 gr de tomate con 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de filete de pescado con 100 gr de quinoa, 300 gr de ensalada de rúcula y zanahoria rallada + 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de castañas de cajú. Licuado de frutilla y arándanos (200 gr de fruta con agua y hielo + 20 gr de semillas molidas)</li></ul></td>
+          <td><ul><li>2 sándwiches integrales con 150 gr de pechuga al curry, 250 gr de ensalada de verdes y 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 20 gr de semillas y 50 gr de espinaca. 300 gr de fruta</li></ul></td>
+          <td><ul><li>60 gr de porotos + 150 gr de pollo con 300 gr de ensalada de lechuga, tomate y cebolla morada + 100 gr de banana madura. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Tortilla de 4 claras revueltas con 40 gr de almendras. 200 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>Ensalada tipo caesar con 1/2 bloque de tofu (180 gr de tofu) + 250 gr de hojas verdes (espinaca, rúcula y lechuga) + 1 rodaja de pan integral tostado tipo croutons con 40 gr palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo tibio, 50 gr de tomate y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pescado al horno con 100 gr de puré de papa criolla con cilantro + 300 gr de ensalada de rúcula, tomate y cebolla morada. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de banana con 20 gr de manteca de castañas de cajú. 150 gr de yogur natural con 50 gr de fresas</li></ul></td>
+          <td><ul><li>Crema de 250 gr de zapallo y zanahoria con 150 gr de pollo + 100 gr de papa. Agregar 10 ml de aceite de oliva</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 2 claras + 50 gr espinaca + 60 gr de avena) 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de pechuga de pollo con 100 gr de banana hervida + 300 gr de ensalada de verdes con 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de almendras tostadas. 200 gr de manzana verde</li></ul></td>
+          <td><ul><li>Ensalada de 150 gr atún con 250 gr de hojas verdes, tomate y cebolla morada + 100 gr de choclo y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>50 gr de pan blanco con 100 gr de huevos revueltos, 50 gr de cebolla y tomate + 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr albóndigas de carne molida (3 unidades) con 300 gr de ensalada de hojas verdes, pepino y tomate + 100 gr de banana hervida y 60 gr de hummus de arvejas + 40 gr de palta</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de mix de almendras y castañas de cajú</li></ul></td>
+          <td><ul><li>Omelette con 3 huevos + 2 lonjas de jamón con 100 gr de choclo + 250 gr de hojas verdes y tomates cherry con 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan con 100 gr de huevo revuelto, 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de salmón con 100 gr de papa al horno y 300 gr de ensalada de hojas verdes, tomate y zapallo asada con 60 gr de arvejas. 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de banana con 20 gr de manteca de castañas de cajú y 1 vaso de 200 ml de leche descremada</li></ul></td>
+          <td><ul><li>3/4 de taza de granos/legumbres cocidas con 250 gr de ensalada de repollo colorado, tomate y lechuga + 40 gr de palta y 100 gr de choclo</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="week-panel " id="panel-s5">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 50 gr de espinaca con 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pescado asado con 100 gr de papa asada o al vapor + 300 gr de ensalada de rúcula, espinaca, tomate, champiñones y 60 gr de porotos negros o blancos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de mix de frutos secos + 200 gr de frutos rojos</li></ul></td>
+          <td><ul><li>100 gr de sándwiches integrales (2 unidades) con 5 lonjas de jamón y 250 gr de vegetales salteados (cebolla, pimientos y tomates cherry) + 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto + 50 gr de champiñones con 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>Ensalada con 60 gr de lentejas y 150 gr de atún+ 300 gr de lechuga, pepino, tomate, zanahoria asada y 100 gr de choclo. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 200 gr de frutas de estación + 40 gr de almendras</li></ul></td>
+          <td><ul><li>Ensalada de 150 gr de pollo en trocitos con 100 gr de choclo, 250 gr de ensalada de hojas verdes, champiñones y tomate + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pechuga desmechada con 300 gr de vegetales asados y 100 gr de quinoa con 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>2 huevos revueltos + 200 gr de ensalada de frutas con 40 gr de pistachos picados</li></ul></td>
+          <td><ul><li>Crema de zapallo (150 gr de pollo mechado, 100 gr de papa y 250 gr de zapallo cocida) 10 ml de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo tibio, 20 gr de semillas de girasol y 50 gr de tomate. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de salmón con 100 gr de batata asado, 300 gr de brócoli y zapallo asada + 60 gr de lentejas. 10 ml de aceite</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de maní tostado</li></ul></td>
+          <td><ul><li>2 sándwiches integrales con 150 gr de atún, 250 gr de ensalada de verdes y 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 2 claras + 50 gr de espinaca + 60 gr de avena con 20 gr de semillas de girasol. 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de filete de pechuga con 100 gr de arroz + 300 gr de vegetales horneados con 10 ml de aceite y 60 gr de hummus de garbanzos</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de manteca de maní y 200 gr de banana</li></ul></td>
+          <td><ul><li>Omelette con 3 huevos + 2 lonjas de jamón con 100 gr de choclo, 250 gr de hojas verdes y tomates cherry + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>50 gr de pan blanco con 100 gr de huevos revueltos, 50 gr de cebolla y tomate + 20 gr de semillas de chía. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de albóndigas de carne molida (3 unidades) con 300 gr de ensalada a elección + 100 gr de choclo con 10 ml de aceite y 60 gr de hummus de garbanzos</li></ul></td>
+          <td><ul><li>150 gr de yogur + 40 gr de castañas de cajú y 200 gr de fruta</li></ul></td>
+          <td><ul><li>2 sándwiches integrales de 150 gr de pechuga al curry con 250 gr de ensalada de verdes y 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan con 100 gr de huevo revuelto, 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de filete de res magro con 100 gr de papa al vapor, 300 gr de ensalada de lechuga, rúcula, cherry y 60 gr de arvejas</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de fruta) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>3/4 de taza de granos/legumbres cocidas + 100 gr de arroz con 250 gr de ensalada de repollo y zanahoria. 40 gr de palta pisado con limón</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="week-panel " id="panel-s6">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th class="col-meal">☀ Desayuno</th>
+            <th class="col-meal">🥗 Almuerzo</th>
+            <th class="col-meal">🍎 Snack</th>
+            <th class="col-meal">🌙 Cena</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td><div class="op-num">1</div></td>
+          <td><ul><li>50 gr de tortilla integral con 2 huevos tibios con cebolla morada y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pechuga a la plancha con 100 gr de banana hervida y 300 gr de ensalada de diferentes colores + 60 gr de porotos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 200 gr de frutas de estación y 40 gr de almendras</li></ul></td>
+          <td><ul><li>Ensalada tipo caesar con 1/2 bloque de tofu en cuadraditos (180 gr de tofu) con 250 gr de hojas verdes (espinaca, rúcula y lechuga) + 100 gr de choclo y 40 gr palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">2</div></td>
+          <td><ul><li>Pancake salado (1 huevo + 100 gr de claras + 50 gr espinaca + 60 gr de avena) 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de carne de cerdo con 100 gr de banana madura cocido + 300 gr de ensalada multicolor con 60 gr de lentejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>2 huevos revueltos con 40 gr de nueces picadas y 200 gr de fruta</li></ul></td>
+          <td><ul><li>2 sándwiches integrales con 150 gr de atún, 250 gr de ensalada de verdes + 40 gr de palta pisado con limón</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">3</div></td>
+          <td><ul><li>50 gr de pan integral con 100 gr de huevo revuelto, 20 gr de semillas de sésamo y 50 gr de pimientos. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de pollo guisado con 200 gr de cebolla, tomate y morrón + 100 gr de papa criolla con 60 gr de porotos y 100 gr de hojas verdes. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de almendras tostadas</li></ul></td>
+          <td><ul><li>Omelette con 100 gr de huevo + 50 gr de queso (2 lonjas) con 250 gr de ensalada de verdes + 100 gr de granos de choclo y 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">4</div></td>
+          <td><ul><li>50 gr de pan integral con 1 huevo revuelto, 50 gr de jamón de pavo, 50 gr de tomate en rodajas y 20 gr de semillas de lino. 300 gr de fruta</li></ul></td>
+          <td><ul><li>150 gr de bistec de cerdo con 100 gr de arroz integral + 300 gr de ensalada de zanahoria rallada, tomate y 60 gr de arvejas. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>4 claras revueltas + 40 gr de almendras y 200 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>Crema de brócoli y atún (150 gr de atún con 100 gr de papa + 250 gr de brócoli y cebolla) 10 ml de aceite</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">5</div></td>
+          <td><ul><li>50 gr de pan de masa madre con 1 huevo revuelto, 30 gr de queso, 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>150 gr de pescado con 100 gr de banana hervida + ensalada con 60 gr de garbanzos, 250 gr de verdes con tomates cherry y cebolla morada. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur griego con 40 gr de castañas de cajú. Licuado de frutilla (200 gr de frutilla con agua y hielo)</li></ul></td>
+          <td><ul><li>150 gr de salmón con 100 gr de papa asada, 250 gr de ensalada de tomate, rúcula y pepino + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">6</div></td>
+          <td><ul><li>Pancake salado (100 gr de claras + 50 gr de espinaca + 60 gr de avena) con 30 gr de queso blando + 20 gr de semillas de girasol y 300 gr de mix de frutas</li></ul></td>
+          <td><ul><li>150 gr de carne de res asada con 100 gr de puré de papa, 300 gr de ensalada de hojas verdes, pepino y tomate con 60 gr de hummus de garbanzos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>Licuado de banana (200 ml de leche descremada + 200 gr de banana) y 40 gr de nueces</li></ul></td>
+          <td><ul><li>Omelette con 3 huevos + 2 lonjas de jamón con 100 gr de choclo, 250 gr de hojas verdes y tomates cherry + 40 gr de palta</li></ul></td>
+        </tr><tr>
+          <td><div class="op-num">7</div></td>
+          <td><ul><li>50 gr de pan de masa madre con 100 gr de huevo, 50 gr de espinaca y 20 gr de semillas de lino. 300 gr de ensalada de frutas</li></ul></td>
+          <td><ul><li>150 gr de pollo al wok con 300 gr de vegetales salteados (a elección) + 100 gr de banana hervida y 60 gr de porotos. Agregar 10 ml de aceite para aderezar</li></ul></td>
+          <td><ul><li>150 gr de yogur con 40 gr de mix de frutos secos + 200 gr de frutos rojos</li></ul></td>
+          <td><ul><li>3/4 de taza de hummus (garbanzos cocidos) + 100 gr de pan integral con 250 gr de ensalada de verdes, tomates cherry y pimiento. 40 gr de palta pisado con limón</li></ul></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-logo">LONG<span>EVO</span></div>
+  <div class="footer-sub">Plan Nutricional · 2500 kcal · 12 semanas</div>
+</footer>
+
+<script>
+function showWeek(id, el) {
+  document.querySelectorAll('.week-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.week-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
